@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val apiService: TheMovieDBInterface = TheMovieDBClient.getClient()
-        movieRepository = MoviePagedListRepository(apiService)
+        movieRepository = MoviePagedListRepository(apiService,this)
         viewModel = getViewModel()
 
         val movieAdapter = NowPlayingMoviePagedListAdapter(this)

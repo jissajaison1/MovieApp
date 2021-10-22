@@ -12,13 +12,14 @@ import com.example.movieapp.data.repository.MovieDataSourceFactory
 import com.example.movieapp.data.repository.NetworkState
 import com.example.movieapp.data.vo.Movie
 import com.example.movieapp.data.vo.MovieDetails
+import com.example.movieapp.room.MovieDao
 import com.example.movieapp.room.NowPlayingMovieDatabase
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
-class MoviePagedListRepository (private val apiService: TheMovieDBInterface, private val context: Context) {
+class MoviePagedListRepository (private val apiService: TheMovieDBInterface, private val context: Context, private val movieDao: MovieDao) {
 
     lateinit var moviePagedList: LiveData<PagedList<Movie>>
     lateinit var moviesDataSourceFactory: MovieDataSourceFactory
@@ -42,7 +43,7 @@ class MoviePagedListRepository (private val apiService: TheMovieDBInterface, pri
         )
     }
 
-    fun getMoviePagedListFromDB(): LiveData<PagedList<MovieDetails>>{
+    /*fun getMoviePagedListFromDB(): LiveData<PagedList<MovieDetails>>{
         val movieDao = NowPlayingMovieDatabase.getDBInstance(context).movieDao()
         runBlocking {
             withContext(Dispatchers.Default) {
@@ -54,6 +55,6 @@ class MoviePagedListRepository (private val apiService: TheMovieDBInterface, pri
             }
         }
         
-    }
+    }*/
 
 }
