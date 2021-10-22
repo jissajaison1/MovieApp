@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
     <data>
-
+        <variable
+            name="viewModel"
+            type="com.example.movieapp.ui.now_playing_movie.MainActivityViewModel" />
     </data>
 <androidx.cardview.widget.CardView
     android:id="@+id/card_view"
@@ -26,7 +28,7 @@
             android:layout_height="180dp"
             android:scaleType="centerCrop"
             android:layout_gravity="center"
-            android:src="@drawable/ic_launcher_foreground">
+            android:src="@drawable/ic_launcher_foreground" >
 
         </ImageView>
 
