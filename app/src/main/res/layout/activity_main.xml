@@ -42,7 +42,8 @@
             android:layout_margin="4dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scrollbars="vertical"/>
+            android:scrollbars="vertical"
+            android:text="" />
 
     </LinearLayout>
 

@@ -19,7 +19,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
-class MoviePagedListRepository (private val apiService: TheMovieDBInterface, private val context: Context, private val movieDao: MovieDao) {
+class MoviePagedListRepository (private val apiService: TheMovieDBInterface, private val context: Context) {
 
     lateinit var moviePagedList: LiveData<PagedList<Movie>>
     lateinit var moviesDataSourceFactory: MovieDataSourceFactory
