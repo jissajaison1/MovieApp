@@ -1,10 +1,14 @@
 package com.example.movieapp.data.vo
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
+@Entity
 data class Movie(
     val page: Int,
-    val id: Int,
+    @PrimaryKey
+    var id: Int,
     @SerializedName("poster_path")
     val posterPath: String,
     @SerializedName("release_date")
