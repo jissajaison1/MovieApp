@@ -1,21 +1,25 @@
 package com.example.movieapp.data.repository
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import com.example.movieapp.data.api.FIRST_PAGE
 import com.example.movieapp.data.api.TheMovieDBInterface
-import com.example.movieapp.data.vo.Movie
+import com.example.movieapp.data.vo.MovieDetails
+import com.example.movieapp.room.NowPlayingMovieDatabase
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
-class MovieDataSource(private val apiService: TheMovieDBInterface, private val compositeDisposable: CompositeDisposable) : PageKeyedDataSource<Int, Movie>() {
+class MovieDataSource(private val apiService: TheMovieDBInterface, private val compositeDisposable: CompositeDisposable, private val context: Context) : PageKeyedDataSource<Int, MovieDetails>() {
 
     private var page = FIRST_PAGE
 
     val networkState: MutableLiveData<NetworkState> = MutableLiveData()
 
-    override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, Movie>) {
+    val movieDao = NowPlayingMovieDatabase.getDBInstance(context).movieDao()
+
+    override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, MovieDetails>) {
         networkState.postValue(NetworkState.LOADING)
 
         compositeDisposable.add(
@@ -23,8 +27,9 @@ class MovieDataSource(private val apiService: TheMovieDBInterface, private val c
                 .subscribeOn(Schedulers.io())
                 .subscribe(
                     {
-                        if(it.totalPages >= params.key) {
-                            callback.onResult(it.movieLists,params.key+1)
+                        it.movieLists?.let { it1 -> movieDao.insertMovieList(it1) }
+                        if(it.totalPages!! >= params.key) {
+                            it.movieLists?.let { it1 -> callback.onResult(it1,params.key+1) }
                             networkState.postValue(NetworkState.LOADED)
                         }
                         else {
@@ -39,10 +44,10 @@ class MovieDataSource(private val apiService: TheMovieDBInterface, private val c
         )
     }
 
-    override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, Movie>) {
+    override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, MovieDetails>) {
     }
 
-    override fun loadInitial(params: LoadInitialParams<Int>, callback: LoadInitialCallback<Int, Movie>) {
+    override fun loadInitial(params: LoadInitialParams<Int>, callback: LoadInitialCallback<Int, MovieDetails>) {
         networkState.postValue(NetworkState.LOADING)
 
         compositeDisposable.add(
@@ -50,7 +55,7 @@ class MovieDataSource(private val apiService: TheMovieDBInterface, private val c
                 .subscribeOn(Schedulers.io())
                 .subscribe(
                     {
-                        callback.onResult(it.movieLists,null,page+1)
+                        it.movieLists?.let { it1 -> callback.onResult(it1,null,page+1) }
                         networkState.postValue(NetworkState.LOADED)
                     },
                     {

@@ -10,22 +10,19 @@ import com.example.movieapp.data.api.TheMovieDBInterface
 import com.example.movieapp.data.repository.MovieDataSource
 import com.example.movieapp.data.repository.MovieDataSourceFactory
 import com.example.movieapp.data.repository.NetworkState
-import com.example.movieapp.data.vo.Movie
 import com.example.movieapp.data.vo.MovieDetails
-import com.example.movieapp.room.MovieDao
-import com.example.movieapp.room.NowPlayingMovieDatabase
 import io.reactivex.disposables.CompositeDisposable
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
+
 
 class MoviePagedListRepository (private val apiService: TheMovieDBInterface, private val context: Context) {
 
-    lateinit var moviePagedList: LiveData<PagedList<Movie>>
+    lateinit var moviePagedList: LiveData<PagedList<MovieDetails>>
+    lateinit var moviePagedListFromRoom: LiveData<PagedList<MovieDetails>>
+    lateinit var movieListFromDB: List<MovieDetails>
     lateinit var moviesDataSourceFactory: MovieDataSourceFactory
 
-    fun fetchLiveMoviePagedList(compositeDisposable: CompositeDisposable): LiveData<PagedList<Movie>> {
-        moviesDataSourceFactory = MovieDataSourceFactory(apiService, compositeDisposable)
+    fun fetchLiveMoviePagedList(compositeDisposable: CompositeDisposable): LiveData<PagedList<MovieDetails>> {
+        moviesDataSourceFactory = MovieDataSourceFactory(apiService, compositeDisposable,context)
 
         val config: PagedList.Config = PagedList.Config.Builder()
             .setEnablePlaceholders(false)
@@ -33,6 +30,7 @@ class MoviePagedListRepository (private val apiService: TheMovieDBInterface, pri
             .build()
 
         moviePagedList = LivePagedListBuilder(moviesDataSourceFactory, config).build()
+        //moviePagedList = LivePagedListBuilder()
 
         return moviePagedList
     }
@@ -43,7 +41,7 @@ class MoviePagedListRepository (private val apiService: TheMovieDBInterface, pri
         )
     }
 
-    /*fun getMoviePagedListFromDB(): LiveData<PagedList<MovieDetails>>{
+/*   fun getMoviePagedListFromDB(): LiveData<PagedList<Movie>>{
         val movieDao = NowPlayingMovieDatabase.getDBInstance(context).movieDao()
         runBlocking {
             withContext(Dispatchers.Default) {
@@ -51,10 +49,24 @@ class MoviePagedListRepository (private val apiService: TheMovieDBInterface, pri
                     .setPageSize(POST_PER_PAGE)
                     .setEnablePlaceholders(false)
                     .build()
-                movieDao.getMovieList()
+                movieListFromDB = movieDao.getMovieList()
+                //moviePagedListFromRoom = movieDao.getMovieList()//need to convert movieListFromDB to Paged List.
             }
         }
-        
+        return moviePagedListFromRoom
+    }*/
+
+    /*fun insertMoviePagedListToDB(){
+        val movieDao = NowPlayingMovieDatabase.getDBInstance(context).movieDao()
+        runBlocking {
+            withContext(Dispatchers.Default) {
+                val config = PagedList.Config.Builder()
+                    .setPageSize(POST_PER_PAGE)
+                    .setEnablePlaceholders(false)
+                    .build()
+                movieDao.insertMovieList(moviePagedList)
+            }
+        }
     }*/
 
 }

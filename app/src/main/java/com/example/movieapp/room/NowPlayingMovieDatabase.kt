@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.movieapp.data.vo.MovieDetails
 
-@Database(entities = [MovieDetails::class], version = 1)
+@Database(entities = [MovieDetails::class], version = 3)
 @TypeConverters(TypeConverterMovie::class)
 abstract class NowPlayingMovieDatabase: RoomDatabase() {
     abstract fun movieDao(): MovieDao
@@ -19,6 +19,7 @@ abstract class NowPlayingMovieDatabase: RoomDatabase() {
             if(DB_INSTANCE == null) {
                 DB_INSTANCE = Room.databaseBuilder(context.applicationContext, NowPlayingMovieDatabase::class.java,"Movie_DB")
                     .allowMainThreadQueries()
+                    .fallbackToDestructiveMigration()
                     .build()
             }
             return DB_INSTANCE!!
