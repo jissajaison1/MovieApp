@@ -10,16 +10,18 @@ import com.example.movieapp.data.api.TheMovieDBInterface
 import com.example.movieapp.data.repository.MovieDataSource
 import com.example.movieapp.data.repository.MovieDataSourceFactory
 import com.example.movieapp.data.repository.NetworkState
-import com.example.movieapp.data.vo.Movie
+import com.example.movieapp.data.vo.MovieDetails
 import io.reactivex.disposables.CompositeDisposable
+
 
 class MoviePagedListRepository (private val apiService: TheMovieDBInterface, private val context: Context) {
 
-    lateinit var moviePagedList: LiveData<PagedList<Movie>>
-    lateinit var moviePagedListFromRoom: LiveData<PagedList<Movie>>
+    lateinit var moviePagedList: LiveData<PagedList<MovieDetails>>
+    lateinit var moviePagedListFromRoom: LiveData<PagedList<MovieDetails>>
+    lateinit var movieListFromDB: List<MovieDetails>
     lateinit var moviesDataSourceFactory: MovieDataSourceFactory
 
-    fun fetchLiveMoviePagedList(compositeDisposable: CompositeDisposable): LiveData<PagedList<Movie>> {
+    fun fetchLiveMoviePagedList(compositeDisposable: CompositeDisposable): LiveData<PagedList<MovieDetails>> {
         moviesDataSourceFactory = MovieDataSourceFactory(apiService, compositeDisposable,context)
 
         val config: PagedList.Config = PagedList.Config.Builder()
@@ -28,6 +30,7 @@ class MoviePagedListRepository (private val apiService: TheMovieDBInterface, pri
             .build()
 
         moviePagedList = LivePagedListBuilder(moviesDataSourceFactory, config).build()
+        //moviePagedList = LivePagedListBuilder()
 
         return moviePagedList
     }
@@ -38,7 +41,7 @@ class MoviePagedListRepository (private val apiService: TheMovieDBInterface, pri
         )
     }
 
-/*    fun getMoviePagedListFromDB(): LiveData<PagedList<Movie>>{
+/*   fun getMoviePagedListFromDB(): LiveData<PagedList<Movie>>{
         val movieDao = NowPlayingMovieDatabase.getDBInstance(context).movieDao()
         runBlocking {
             withContext(Dispatchers.Default) {
@@ -46,7 +49,8 @@ class MoviePagedListRepository (private val apiService: TheMovieDBInterface, pri
                     .setPageSize(POST_PER_PAGE)
                     .setEnablePlaceholders(false)
                     .build()
-                moviePagedListFromRoom = movieDao.getMovieList(1)
+                movieListFromDB = movieDao.getMovieList()
+                //moviePagedListFromRoom = movieDao.getMovieList()//need to convert movieListFromDB to Paged List.
             }
         }
         return moviePagedListFromRoom

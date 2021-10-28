@@ -1,26 +1,17 @@
 package com.example.movieapp.ui.now_playing_movie
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.lifecycle.*
-import androidx.paging.PagedList
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.movieapp.R
-import com.example.movieapp.data.api.POST_PER_PAGE
 import com.example.movieapp.data.api.TheMovieDBClient
 import com.example.movieapp.data.api.TheMovieDBInterface
 import com.example.movieapp.data.repository.NetworkState
-import com.example.movieapp.data.vo.Movie
-import com.example.movieapp.data.vo.MovieDetails
 import com.example.movieapp.room.NowPlayingMovieDatabase
-import com.example.movieapp.ui.single_movie_details.SingleMovie
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
 

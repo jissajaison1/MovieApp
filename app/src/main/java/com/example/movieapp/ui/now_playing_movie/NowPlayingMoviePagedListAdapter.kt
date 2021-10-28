@@ -12,13 +12,12 @@ import com.bumptech.glide.Glide
 import com.example.movieapp.R
 import com.example.movieapp.data.api.POSTER_BASE_URL
 import com.example.movieapp.data.repository.NetworkState
-import com.example.movieapp.data.vo.Movie
-import com.example.movieapp.room.NowPlayingMovieDatabase
+import com.example.movieapp.data.vo.MovieDetails
 import com.example.movieapp.ui.single_movie_details.SingleMovie
 import kotlinx.android.synthetic.main.movie_list_item.view.*
 import kotlinx.android.synthetic.main.network_state_item.view.*
 
-class NowPlayingMoviePagedListAdapter(public val context: Context) : PagedListAdapter<Movie, RecyclerView.ViewHolder>(MovieDiffCallback()) {
+class NowPlayingMoviePagedListAdapter(public val context: Context) : PagedListAdapter<MovieDetails, RecyclerView.ViewHolder>(MovieDiffCallback()) {
 
     val MOVIE_VIEW_TYPE = 1
     val NETWORK_VIEW_TYPE = 2
@@ -64,19 +63,19 @@ class NowPlayingMoviePagedListAdapter(public val context: Context) : PagedListAd
 
 
 
-    class MovieDiffCallback : DiffUtil.ItemCallback<Movie>(){
-        override fun areItemsTheSame(oldItem: Movie, newItem: Movie): Boolean {
+    class MovieDiffCallback : DiffUtil.ItemCallback<MovieDetails>(){
+        override fun areItemsTheSame(oldItem: MovieDetails, newItem: MovieDetails): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: Movie, newItem: Movie): Boolean {
+        override fun areContentsTheSame(oldItem: MovieDetails, newItem: MovieDetails): Boolean {
             return oldItem == newItem
         }
 
     }
 
     class MovieItemViewHolder (view: View): RecyclerView.ViewHolder(view) {
-        fun bind(movie: Movie?,context: Context) {
+        fun bind(movie: MovieDetails?,context: Context) {
             itemView.cv_movie_title.text = movie?.title
             itemView.cv_movie_release_date.text = movie?.releaseDate
 

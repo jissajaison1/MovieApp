@@ -1,14 +1,12 @@
 package com.example.movieapp.room
 
-import androidx.paging.PagedList
 import androidx.room.*
-import com.example.movieapp.data.vo.Movie
 import com.example.movieapp.data.vo.MovieDetails
 
 @Dao
 interface MovieDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertMovieList(movieDetails: List<Movie>)
+    fun insertMovieList(movieDetails: List<MovieDetails>)
 
     //@Update
     //fun updateMovie(movieDetails: MovieDetails)
@@ -19,10 +17,10 @@ interface MovieDao {
     //@Query("SELECT * FROM NowPlayingMovies WHERE page = :page_")
     //fun getMovieList(page_:Int): List<Movie>
 
-    @Query("SELECT * FROM Movie")
-    fun getMovieList(): List<Movie>
+    @Query("SELECT * FROM NowPlayingMovies")
+    fun getMovieList(): List<MovieDetails>
 
-    @Query("DELETE FROM Movie")
+    @Query("DELETE FROM NowPlayingMovies")
     fun deleteAll()
 
 }

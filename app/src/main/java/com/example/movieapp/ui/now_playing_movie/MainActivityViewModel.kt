@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.paging.PagedList
 import com.example.movieapp.data.repository.NetworkState
-import com.example.movieapp.data.vo.Movie
+import com.example.movieapp.data.vo.MovieDetails
 import io.reactivex.disposables.CompositeDisposable
 
 
@@ -12,11 +12,11 @@ class MainActivityViewModel (private val movieRepository: MoviePagedListReposito
 
     private val compositeDisposable = CompositeDisposable()
 
-    val moviePagedList: LiveData<PagedList<Movie>> by lazy {
+    val moviePagedList: LiveData<PagedList<MovieDetails>> by lazy {
         movieRepository.fetchLiveMoviePagedList(compositeDisposable)
     }
 
- /*   val moviePagedListFromRoom: LiveData<PagedList<Movie>> by lazy {
+/*    val moviePagedListFromRoom: LiveData<PagedList<Movie>> by lazy {
         movieRepository.getMoviePagedListFromDB()
     }*/
 
