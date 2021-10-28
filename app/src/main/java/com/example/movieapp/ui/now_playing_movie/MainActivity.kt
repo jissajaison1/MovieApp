@@ -53,41 +53,21 @@ class MainActivity : AppCompatActivity() {
         rv_movie_list.adapter = movieAdapter
 
         val movieDao = NowPlayingMovieDatabase.getDBInstance(this).movieDao()
-
+        //movieDao.insertMovieList(viewModel.moviePagedList as List<Movie>)
+        //Log.i("Movie","Movie List Inserted!")
+        //movieDao.deleteAll()
+        Log.i("Movie","Movie List from DB")
+        movieDao.getMovieList().forEach {
+            Log.i("Movie","Title: ${it.title}")
+            Log.i("Movie","Poster Path: ${it.posterPath}")
+            Log.i("Movie","Release Date: ${it.releaseDate}")
+        }
+        Log.i("Movie","Movie List from DB finished!")
 
         //if (viewModel.moviePagedListFromRoom == null){
             viewModel.moviePagedList.observe(this, Observer { it ->
-                movieAdapter.submitList(it)
-                Log.i("Movie","Movie List Insertion Started!")
-                //var movies: List<Movie>
-               /* it.forEach {
-                    var movie = Movie(it.page,it.id,it.posterPath,it.releaseDate,it.title)
-                    Log.i("Movie","ID: ${movie.toString()}")
-                    movieDao.insertMovieList(movie)
-
-                }*/
                 movieDao.insertMovieList(it)
-                Log.i("Movie","Movie List Inserted!")
-                Log.i("Movie","Movie List from DB")
-                movieDao.getMovieList().forEach {
-                    Log.i("Movie","Title: ${it.title}")
-                    Log.i("Movie","Poster Path: ${it.posterPath}")
-                    Log.i("Movie","Release Date: ${it.releaseDate}")
-                }
-                Log.i("Movie","Movie List from DB finished!")
-                // need to insert this list to room db
-                //insertMoviePagedListToDB()
-                /*val movieDao = NowPlayingMovieDatabase.getDBInstance(this).movieDao()
-                runBlocking {
-                    withContext(Dispatchers.Default) {
-                        val config = PagedList.Config.Builder()
-                            .setPageSize(POST_PER_PAGE)
-                            .setEnablePlaceholders(false)
-                            .build()
-                        movieDao.insertMovieList(it)
-                    }
-                }
-*/
+                movieAdapter.submitList(it)
             })
         //}
         /*else {
@@ -96,15 +76,6 @@ class MainActivity : AppCompatActivity() {
             })
         }*/
 
-
-        /* runBlocking {
-                       withContext(Dispatchers.Default) {
-                           val config = PagedList.Config.Builder()
-                               .setPageSize(POST_PER_PAGE)
-                               .setEnablePlaceholders(false)
-                               .build()
-                           movieDao.getMovieList(it)
-                   }*/
         viewModel.networkState.observe(this, Observer {
             progress_bar_now_playing.visibility = if (viewModel.listIsEmpty() && it == NetworkState.LOADING) View.VISIBLE else View.GONE
             txt_error_now_playing.visibility = if (viewModel.listIsEmpty() && it == NetworkState.ERROR) View.VISIBLE else View.GONE

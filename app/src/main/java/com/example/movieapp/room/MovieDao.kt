@@ -8,7 +8,7 @@ import com.example.movieapp.data.vo.MovieDetails
 @Dao
 interface MovieDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertMovieList(movieDetails: PagedList<Movie>)
+    fun insertMovieList(movieDetails: List<Movie>)
 
     //@Update
     //fun updateMovie(movieDetails: MovieDetails)
@@ -21,5 +21,8 @@ interface MovieDao {
 
     @Query("SELECT * FROM Movie")
     fun getMovieList(): List<Movie>
+
+    @Query("DELETE FROM Movie")
+    fun deleteAll()
 
 }

@@ -11,11 +11,7 @@ import com.example.movieapp.data.repository.MovieDataSource
 import com.example.movieapp.data.repository.MovieDataSourceFactory
 import com.example.movieapp.data.repository.NetworkState
 import com.example.movieapp.data.vo.Movie
-import com.example.movieapp.room.NowPlayingMovieDatabase
 import io.reactivex.disposables.CompositeDisposable
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 
 class MoviePagedListRepository (private val apiService: TheMovieDBInterface, private val context: Context) {
 
@@ -24,7 +20,7 @@ class MoviePagedListRepository (private val apiService: TheMovieDBInterface, pri
     lateinit var moviesDataSourceFactory: MovieDataSourceFactory
 
     fun fetchLiveMoviePagedList(compositeDisposable: CompositeDisposable): LiveData<PagedList<Movie>> {
-        moviesDataSourceFactory = MovieDataSourceFactory(apiService, compositeDisposable)
+        moviesDataSourceFactory = MovieDataSourceFactory(apiService, compositeDisposable,context)
 
         val config: PagedList.Config = PagedList.Config.Builder()
             .setEnablePlaceholders(false)
