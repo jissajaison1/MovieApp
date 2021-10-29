@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity() {
 
         //if (viewModel.moviePagedListFromRoom == null){
             viewModel.moviePagedList.observe(this, Observer { it ->
-                movieDao.insertMovieList(it)
+                //movieDao.insertMovieList(it)
                 movieAdapter.submitList(it)
             })
         //}

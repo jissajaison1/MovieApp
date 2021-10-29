@@ -28,6 +28,7 @@ class MovieDataSource(private val apiService: TheMovieDBInterface, private val c
                 .subscribe(
                     {
                         it.movieLists?.let { it1 -> movieDao.insertMovieList(it1) }
+                        Log.i("Movie","LOAD_AFTER")
                         if(it.totalPages!! >= params.key) {
                             it.movieLists?.let { it1 -> callback.onResult(it1,params.key+1) }
                             networkState.postValue(NetworkState.LOADED)
@@ -55,6 +56,8 @@ class MovieDataSource(private val apiService: TheMovieDBInterface, private val c
                 .subscribeOn(Schedulers.io())
                 .subscribe(
                     {
+                        it.movieLists?.let { it1 -> movieDao.insertMovieList(it1) }
+                        Log.i("Movie","LOAD_INITIAL")
                         it.movieLists?.let { it1 -> callback.onResult(it1,null,page+1) }
                         networkState.postValue(NetworkState.LOADED)
                     },
