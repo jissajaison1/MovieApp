@@ -30,7 +30,6 @@ class MoviePagedListRepository (private val apiService: TheMovieDBInterface, pri
             .build()
 
         moviePagedList = LivePagedListBuilder(moviesDataSourceFactory, config).build()
-        //moviePagedList = LivePagedListBuilder()
 
         return moviePagedList
     }

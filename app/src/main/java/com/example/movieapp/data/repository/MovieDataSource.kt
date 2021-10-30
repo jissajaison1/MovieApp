@@ -17,7 +17,7 @@ class MovieDataSource(private val apiService: TheMovieDBInterface, private val c
 
     val networkState: MutableLiveData<NetworkState> = MutableLiveData()
 
-    val movieDao = NowPlayingMovieDatabase.getDBInstance(context).movieDao()
+    private val movieDao = NowPlayingMovieDatabase.getDBInstance(context).movieDao()
 
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, MovieDetails>) {
         networkState.postValue(NetworkState.LOADING)

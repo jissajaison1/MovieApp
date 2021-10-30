@@ -5,10 +5,12 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.lifecycle.*
+import androidx.paging.PagedList
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.movieapp.R
 import com.example.movieapp.data.api.TheMovieDBClient
 import com.example.movieapp.data.api.TheMovieDBInterface
+import com.example.movieapp.data.repository.MovieDataSource
 import com.example.movieapp.data.repository.NetworkState
 import com.example.movieapp.room.NowPlayingMovieDatabase
 import kotlinx.android.synthetic.main.activity_main.*
@@ -44,10 +46,9 @@ class MainActivity : AppCompatActivity() {
         rv_movie_list.adapter = movieAdapter
 
         val movieDao = NowPlayingMovieDatabase.getDBInstance(this).movieDao()
-        //movieDao.insertMovieList(viewModel.moviePagedList as List<Movie>)
-        //Log.i("Movie","Movie List Inserted!")
-        //movieDao.deleteAll()
+
         Log.i("Movie","Movie List from DB")
+
         movieDao.getMovieList().forEach {
             Log.i("Movie","Title: ${it.title}")
             Log.i("Movie","Poster Path: ${it.posterPath}")
@@ -55,17 +56,9 @@ class MainActivity : AppCompatActivity() {
         }
         Log.i("Movie","Movie List from DB finished!")
 
-        //if (viewModel.moviePagedListFromRoom == null){
             viewModel.moviePagedList.observe(this, Observer { it ->
-                //movieDao.insertMovieList(it)
                 movieAdapter.submitList(it)
             })
-        //}
-        /*else {
-            viewModel.moviePagedListFromRoom.observe(this, Observer {
-                movieAdapter.submitList(it)
-            })
-        }*/
 
         viewModel.networkState.observe(this, Observer {
             progress_bar_now_playing.visibility = if (viewModel.listIsEmpty() && it == NetworkState.LOADING) View.VISIBLE else View.GONE
