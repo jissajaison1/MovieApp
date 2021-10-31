@@ -17,7 +17,7 @@ import com.example.movieapp.ui.single_movie_details.SingleMovie
 import kotlinx.android.synthetic.main.movie_list_item.view.*
 import kotlinx.android.synthetic.main.network_state_item.view.*
 
-class NowPlayingMoviePagedListAdapter(public val context: Context) : PagedListAdapter<MovieDetails, RecyclerView.ViewHolder>(MovieDiffCallback()) {
+class NowPlayingMoviePagedListAdapter(private val context: Context) : PagedListAdapter<MovieDetails, RecyclerView.ViewHolder>(MovieDiffCallback()) {
 
     val MOVIE_VIEW_TYPE = 1
     val NETWORK_VIEW_TYPE = 2
@@ -133,5 +133,4 @@ class NowPlayingMoviePagedListAdapter(public val context: Context) : PagedListAd
             notifyItemChanged(itemCount - 1)
         }
     }
-
 }
