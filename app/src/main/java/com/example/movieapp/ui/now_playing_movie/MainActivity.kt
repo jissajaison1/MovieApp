@@ -12,6 +12,7 @@ import com.example.movieapp.data.api.TheMovieDBClient
 import com.example.movieapp.data.api.TheMovieDBInterface
 import com.example.movieapp.data.repository.MovieDataSource
 import com.example.movieapp.data.repository.NetworkState
+import com.example.movieapp.data.vo.MovieDetails
 import com.example.movieapp.room.NowPlayingMovieDatabase
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -30,7 +31,6 @@ class MainActivity : AppCompatActivity() {
         viewModel = getViewModel()
 
         val movieAdapter = NowPlayingMoviePagedListAdapter(this)
-
         val gridLayoutManager = GridLayoutManager(this,3)
 
         gridLayoutManager.spanSizeLookup = object: GridLayoutManager.SpanSizeLookup(){
@@ -48,7 +48,6 @@ class MainActivity : AppCompatActivity() {
         val movieDao = NowPlayingMovieDatabase.getDBInstance(this).movieDao()
 
         Log.i("Movie","Movie List from DB")
-
         movieDao.getMovieList().forEach {
             Log.i("Movie","Title: ${it.title}")
             Log.i("Movie","Poster Path: ${it.posterPath}")
@@ -56,8 +55,14 @@ class MainActivity : AppCompatActivity() {
         }
         Log.i("Movie","Movie List from DB finished!")
 
-            viewModel.moviePagedList.observe(this, Observer { it ->
+            /*viewModel.moviePagedList.observe(this, Observer { it ->
                 movieAdapter.submitList(it)
+            })*/
+
+        viewModel.pagedListLiveData.observe(this,
+            Observer<PagedList<MovieDetails>?> { movies ->
+                Log.i("Main",""+ movies)
+                movieAdapter.submitList(movies)
             })
 
         viewModel.networkState.observe(this, Observer {
@@ -74,7 +79,7 @@ class MainActivity : AppCompatActivity() {
         return ViewModelProviders.of(this, object: ViewModelProvider.Factory {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
                 @Suppress("UNCHECKED_CAST")
-                return MainActivityViewModel(movieRepository) as T
+                return MainActivityViewModel(movieRepository,applicationContext) as T
             }
         })[MainActivityViewModel::class.java]
     }

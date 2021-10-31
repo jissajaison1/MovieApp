@@ -11,7 +11,7 @@ import com.example.movieapp.room.NowPlayingMovieDatabase
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
-class MovieDataSource(private val apiService: TheMovieDBInterface, private val compositeDisposable: CompositeDisposable, private val context: Context) : PageKeyedDataSource<Int, MovieDetails>() {
+class MovieDataSource(private val apiService: TheMovieDBInterface, private val movieList: List<MovieDetails>, private val context: Context) : PageKeyedDataSource<Int, MovieDetails>() {
 
     private var page = FIRST_PAGE
 
@@ -22,7 +22,7 @@ class MovieDataSource(private val apiService: TheMovieDBInterface, private val c
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, MovieDetails>) {
         networkState.postValue(NetworkState.LOADING)
 
-        compositeDisposable.add(
+        //compositeDisposable.add(
             apiService.getNowPlayingMovie(params.key)
                 .subscribeOn(Schedulers.io())
                 .subscribe(
@@ -30,7 +30,7 @@ class MovieDataSource(private val apiService: TheMovieDBInterface, private val c
                         it.movieLists?.let { it1 -> movieDao.insertMovieList(it1) }
                         Log.i("Movie","LOAD_AFTER")
                         if(it.totalPages!! >= params.key) {
-                            it.movieLists?.let { it1 -> callback.onResult(it1,params.key+1) }
+                            it.movieLists?.let { it1 -> callback.onResult(movieDao.getMovieList(),params.key+1) }
                             networkState.postValue(NetworkState.LOADED)
                         }
                         else {
@@ -38,11 +38,12 @@ class MovieDataSource(private val apiService: TheMovieDBInterface, private val c
                         }
                     },
                     {
-                        networkState.postValue(NetworkState.ERROR)
+                        callback.onResult(movieDao.getMovieList(),params.key+1)
+                        networkState.postValue(NetworkState.ENDOFLIST)
                         Log.e("MovieResponse",it.message)
                     }
                 )
-        )
+        //)
     }
 
     override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, MovieDetails>) {
@@ -51,21 +52,22 @@ class MovieDataSource(private val apiService: TheMovieDBInterface, private val c
     override fun loadInitial(params: LoadInitialParams<Int>, callback: LoadInitialCallback<Int, MovieDetails>) {
         networkState.postValue(NetworkState.LOADING)
 
-        compositeDisposable.add(
+        //compositeDisposable.add(
             apiService.getNowPlayingMovie(page)
                 .subscribeOn(Schedulers.io())
                 .subscribe(
                     {
                         it.movieLists?.let { it1 -> movieDao.insertMovieList(it1) }
                         Log.i("Movie","LOAD_INITIAL")
-                        it.movieLists?.let { it1 -> callback.onResult(it1,null,page+1) }
+                        it.movieLists?.let { it1 -> callback.onResult(movieDao.getMovieList(),null,page+1) }
                         networkState.postValue(NetworkState.LOADED)
                     },
                     {
-                        networkState.postValue(NetworkState.ERROR)
+                        callback.onResult(movieDao.getMovieList(),null,page+1)
+                        networkState.postValue(NetworkState.ENDOFLIST)
                         Log.e("MovieResponse",it.message)
                     }
                 )
-        )
+        //)
     }
 }
